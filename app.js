@@ -21,6 +21,33 @@ var budgetController = (function () {
             exp: 0
         }
     }
+
+    return {
+        addItem:  function(type,desc,val) {
+            var ID, newItem;
+            
+                     
+            if (data.allItems[type].length > 0) {
+                ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+            } else {
+                ID = 0;
+            }
+            
+            if (type === 'inc') {
+                newItem = new Income(ID,desc,val);
+            } else if (type === 'exp') {
+                newItem = new Expenses(ID,desc,val);
+            }
+
+            data.allItems[type].push(newItem);
+            return newItem;
+        },
+        testing : function () {
+            console.log(data);
+        }
+                
+        
+    };
     
 })();
 
@@ -60,12 +87,12 @@ var controller = (function (budgetCtrl, UICtrl) {
     }
     var ctrlAddItem = function () {
         var input = UICtrl.getInput();
-        console.log(input);
+        budgetController.addItem(input.type,input.description,input.value);
     }
     return {
         init: function () {
             return setupEventListeners();
-            console.log('Application has started.');
+            
         }
     }
     
