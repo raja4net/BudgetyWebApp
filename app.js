@@ -20,7 +20,6 @@ var budgetController = (function () {
             inc: 0,
             exp: 0
         }
-<<<<<<< HEAD
     };
 
     return {
@@ -32,22 +31,12 @@ var budgetController = (function () {
             // ID = last ID + 1
             
             // Create new ID
-=======
-    }
-
-    return {
-        addItem:  function(type,desc,val) {
-            var ID, newItem;
-            
-                     
->>>>>>> 981329998607a1503cddf1cfed6d5af7e29f9391
             if (data.allItems[type].length > 0) {
                 ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
             } else {
                 ID = 0;
             }
             
-<<<<<<< HEAD
             // Create new item based on 'inc' or 'exp' type
             if (type === 'exp') {
                 newItem = new Expenses(ID, des, val);
@@ -61,22 +50,6 @@ var budgetController = (function () {
             // Return the new element
             return newItem;
         }
-=======
-            if (type === 'inc') {
-                newItem = new Income(ID,desc,val);
-            } else if (type === 'exp') {
-                newItem = new Expenses(ID,desc,val);
-            }
-
-            data.allItems[type].push(newItem);
-            return newItem;
-        },
-        testing : function () {
-            console.log(data);
-        }
-                
-        
->>>>>>> 981329998607a1503cddf1cfed6d5af7e29f9391
     };
     
 })();
@@ -96,7 +69,7 @@ var UIController = (function () {
                     return {
                         type: document.querySelector(DOMStrings.inputType).value, //in for income and exp for expense
                         description: document.querySelector(DOMStrings.inputDescription).value,
-                        value: document.querySelector(DOMStrings.inputValue).value
+                        value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
                         
                     };
             
@@ -145,16 +118,14 @@ var controller = (function (budgetCtrl, UICtrl) {
     });
     }
     var ctrlAddItem = function () {
-<<<<<<< HEAD
         var input, newItem;
         input = UICtrl.getInput();
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-        UICtrl.addListItem(newItem, input.type);
-        UICtrl.clearFields();
-=======
-        var input = UICtrl.getInput();
-        budgetController.addItem(input.type,input.description,input.value);
->>>>>>> 981329998607a1503cddf1cfed6d5af7e29f9391
+        if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+            UICtrl.addListItem(newItem, input.type);
+            UICtrl.clearFields();
+        }
+        
     }
     return {
         init: function () {
