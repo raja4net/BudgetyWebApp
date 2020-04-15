@@ -11,6 +11,14 @@ var budgetController = (function () {
         this.value = value
     };
 
+    var calculateTotal = function (type) {
+        sum = 0;
+        data.allItems[type].forEach(function (cur) {
+            sum += cur.value;
+        });
+        data.totals[type] = sum;
+    };
+
     var data = {
         allItems: {
             inc: [],
@@ -19,7 +27,10 @@ var budgetController = (function () {
         totals: {
             inc: 0,
             exp: 0
-        }
+        },
+        budget: 0,
+        percentage: -1
+        
     };
 
     return {
@@ -49,6 +60,27 @@ var budgetController = (function () {
             
             // Return the new element
             return newItem;
+        },
+
+        calculateBudget: function() {
+            calculateTotal('inc');
+            calculateTotal('exp');
+            data.budget = data.totals.inc - data.totals.exp;
+            if (data.totals.inc > 0) {
+                data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+            } else {
+                data.percentage = -1;
+            }
+            
+        },
+
+        getBudget: function () {
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalexp: data.totals.exp,
+                percentage: data.percentage
+            };
         }
     };
     
@@ -88,6 +120,7 @@ var UIController = (function () {
                     newHtml = newHtml.replace('%description%', obj.description);
                     newHtml = newHtml.replace('%value%', obj.value);
                     document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+
                 },
                 
                 clearFields: function () {
@@ -117,6 +150,13 @@ var controller = (function (budgetCtrl, UICtrl) {
         }
     });
     }
+
+    var updateBudget = function () {
+        budgetCtrl.calculateBudget();
+        var budget = budgetCtrl.getBudget();
+        console.log(budget);
+    }
+
     var ctrlAddItem = function () {
         var input, newItem;
         input = UICtrl.getInput();
@@ -124,6 +164,7 @@ var controller = (function (budgetCtrl, UICtrl) {
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
             UICtrl.addListItem(newItem, input.type);
             UICtrl.clearFields();
+            updateBudget();
         }
         
     }
@@ -135,4 +176,5 @@ var controller = (function (budgetCtrl, UICtrl) {
     }
     
 })(budgetController, UIController);
+
 controller.init();
